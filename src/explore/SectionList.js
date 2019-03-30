@@ -112,11 +112,11 @@ componentDidMount(){
                     <h2>List Section</h2>
                         <tr className="row">
                           <td className="col-md-3 mb-3">
-                          <Label for="name">School Name</Label>
+                          <Label for="name" style={{color:'white'}}>School Name</Label>
                           <Select options={ schools } name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
                       </td>
                       <td className="col-md-3 mb-3">
-                          <Label for="grade">Class or Grade</Label>
+                          <Label for="grade" style={{color:'white'}}>Class or Grade</Label>
                           <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
                        </td>
                       </tr>

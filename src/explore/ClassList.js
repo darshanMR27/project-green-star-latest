@@ -104,7 +104,7 @@ componentDidMount(){
                   <Container>
                     <Form>
                       <FormGroup className="col-md-3 mb-3">
-                        <Label for="name">School Name</Label>
+                        <Label for="name" style={{color:'white'}}>School Name</Label>
                         <Select options={ schools } name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
                         </FormGroup>
                     </Form>

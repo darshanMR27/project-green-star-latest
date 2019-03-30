@@ -7,13 +7,12 @@ import "@kenshooui/react-multi-select/dist/style.css";
 function validate(schoolName, maxClassGrade, address, pinCode, city) {
   // we are going to store errors for all fields
   // in a signle array
- // alert(roleName +", Pwd = "+password);
   const errors = [];
   if(schoolName === '' || schoolName === "undefined"){
-      errors.push("Role Name cannot be empty");
+      errors.push("School Name cannot be empty");
   } else {
       if (schoolName.length < 5) {
-          errors.push("Role Name should be at least 10 charcters long");
+          errors.push("School Name should be at least 10 charcters long");
       }
   }
   if(maxClassGrade === '' || maxClassGrade === "undefined"){
@@ -209,30 +208,30 @@ class SchoolEdit extends Component {
             </div>
             <div className="row">
             <FormGroup className="col-md-3 mb-3">
-              <Label for="schoolName">School Name</Label>
+              <Label for="schoolName" style={{color:'white'}}>School Name</Label>
               <Input type="text" ref="schoolName" name="schoolName" id="schoolName" placeholder="Enter School Name" onChange={e => this.onChange(e)}  value={schoolName}/>
             </FormGroup>
             <FormGroup className="col-md-3 mb-3">
-              <Label for="maxClassGrade">Max Grade of Class</Label>
+              <Label for="maxClassGrade" style={{color:'white'}}>Max Grade of Class</Label>
               <Input type="text" ref="maxClassGrade" name="maxClassGrade" id="maxClassGrade" placeholder="Enter Max Grade or Class" onChange={e => this.onMaxGradeChange(e)}  value={maxClassGrade}/>
             </FormGroup>
             <FormGroup className="col-md-3 mb-3">
-              <Label for="address">Address</Label>
+              <Label for="address" style={{color:'white'}}>Address</Label>
               <Input type="text" ref="address" name="address" id="address" placeholder="Enter Address" onChange={e => this.onChange(e)}  value={address}/>
             </FormGroup>
             <FormGroup className="col-md-3 mb-3">
-              <Label for="pinCode">Pin Code</Label>
+              <Label for="pinCode" style={{color:'white'}}>Pin Code</Label>
               <Input type="text" ref="pinCode" name="pinCode" id="pinCode" placeholder="Enter Pincode" onChange={e => this.onPinCodeChange(e)}  value={pinCode}/>
             </FormGroup>
             <FormGroup className="col-md-3 mb-3">
-              <Label for="city">City</Label>
+              <Label for="city" style={{color:'white'}}>City</Label>
               <Input type="text" ref="city" name="city" id="city" placeholder="Enter City" onChange={e => this.onChange(e)}  value={city}/>
             </FormGroup>
             </div>
             <div>
             <FormGroup>   
               <Button color="primary" type="submit">Save</Button>{' '}
-              <Button color="success" onClick={() => this.resetSchool()}>reset</Button>
+              <Button color="secondary" onClick={() => this.resetSchool()}>reset</Button>
             </FormGroup>
             </div>
         </Form>

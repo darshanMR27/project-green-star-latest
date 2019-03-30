@@ -10,7 +10,6 @@ import axios from 'axios';
 function validate(schoolId, gradeName) {
   // we are going to store errors for all fields
   // in a signle array
- // alert(roleName +", Pwd = "+password);
   const errors = [];
   if(schoolId === '' || schoolId === "undefined"){
       errors.push("School Name cannot be empty");
@@ -212,11 +211,11 @@ class ClassEdit extends Component {
                 </div>
                 <div className="row">
                     <FormGroup className="col-md-3 mb-3">
-                        <Label for="name">School Name</Label>
+                        <Label for="name" style={{color:'white'}}>School Name</Label>
                         <Input type="text" ref="schoolName" name="schoolName" id="schoolName" value={schoolName}/>
                     </FormGroup>
                     <FormGroup className="col-md-3 mb-3">
-                        <Label for="gradeName">Class or Grade</Label>
+                        <Label for="gradeName" style={{color:'white'}}>Class or Grade</Label>
                         <Input type="text" ref="gradeName" name="gradeName" id="gradeName" placeholder="Enter Class Name" onChange={e => this.onChange(e)}  value={gradeName}/>
                     </FormGroup>
                 </div>
