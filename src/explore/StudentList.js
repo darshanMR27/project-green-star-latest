@@ -228,7 +228,7 @@ componentDidMount(){
                             <td className="thStyle">
                             <ButtonGroup>
                                 <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/students/" + student.id}>Edit</Button>
-                                <Button size="sm" color="danger" onClick={() => this.remove(student.id)}>Delete</Button>
+                                <Button size="sm" color="danger" onClick={() => this.remove(student.id)} disabled>Delete</Button>
                             </ButtonGroup>
                             </td>
                         </tr>

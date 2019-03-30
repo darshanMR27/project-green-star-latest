@@ -31,6 +31,7 @@ state = {
 
 componentDidMount(){
   this.setState({showForm: true});
+  this.setState({showAddForm: true});
   return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
   .then(result => {
     console.log(result);
@@ -49,10 +50,19 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
-    this.setState({showForm: false,
-    schoolName:"",maxGrade:"",address:"",pinCode:"",city:""});
+    this.setState({showForm: false});
+    this.setState({showAddform:false});
     this.props.history.push('/schools/new');
   }
+
+  hideAddButton = async () => {
+    this.setState({showForm: false,
+    schoolName:"",maxGrade:"",address:"",pinCode:"",city:""});
+    this.setState({showAddform: false});
+    this.props.history.push('/schools/new');
+  }
+
+  
 
   async remove(id) {
     await fetch(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/school/${id}`, {
@@ -72,6 +82,9 @@ componentDidMount(){
     const showHide = {
       'display': this.state.showForm ? 'block' : 'none'
     };
+    const showHideAddButton = {
+      'display': this.state.showAddForm ? 'block' : 'none'
+    };
     if(error){
       return (
           <p>
@@ -82,11 +95,11 @@ componentDidMount(){
       }
     return (
       <div>
-        <div className="row float-right">
+        <div style={showHideAddButton} className="row float-right" >
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()}  tag={Link} to="/schools/new">Add School</Button>{'     '}
+                    <Button color="success" onClick={() => this.hideAddButton()}  tag={Link} to="/schools/new">Add School</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>
@@ -115,7 +128,7 @@ componentDidMount(){
                     <td className="thStyle"> 
                       <ButtonGroup>
                         <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/schools/" + school.id}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => this.remove(school.id)}>Delete</Button>
+                        <Button size="sm" color="danger" onClick={() => this.remove(school.id)} disabled>Delete</Button>
                       </ButtonGroup>
                     </td>
                   </tr>

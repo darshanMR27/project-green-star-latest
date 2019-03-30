@@ -99,7 +99,7 @@ componentDidMount(){
                       <td className="thStyle">
                         <ButtonGroup>
                           <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/holidays/"+ holiday.id}>Edit</Button>
-                          <Button size="sm" color="danger" onClick={() => this.remove(holiday.id)}>Delete</Button>
+                          <Button size="sm" color="danger" onClick={() => this.remove(holiday.id)} disabled>Delete</Button>
                         </ButtonGroup>
                       </td>
                     </tr> ))}

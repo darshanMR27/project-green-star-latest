@@ -394,9 +394,9 @@ componentDidMount(){
               <div className="report" style={showIndRepHide}>
                   {<table data={ indReportData } className="tableStyle" >
             <thead><tr>
-                    <th className="thStyle"row='0' rowSpan='2'  dataField='rollNum' isKey  style={{align:'cente'}} >Roll No</th>
-                    <th className="thStyle"row='0' rowSpan='2' dataField="studentName">Student Name</th>
-                    <th className="thStyle"row='0' rowSpan='2'  dataField='caste'>Caste</th>{theadRows}
+                    <th className="thStyle" row='0' rowSpan='2'  dataField='rollNum' isKey  style={{align:'cente'}} >Roll No</th>
+                    <th className="thStyle" row='0' rowSpan='2' dataField="studentName">Student Name</th>
+                    <th className="thStyle" row='0' rowSpan='2'  dataField='caste'>Caste</th>{theadRows}
                     
                     </tr>
                     <tr>{headSecondRow  }</tr>
@@ -412,11 +412,11 @@ componentDidMount(){
             <div className="report" style={showGrpRepHide}>
                     {<table className="tableStyle" >
                       <thead><tr>
-                              <th className="thStyle"row='0' rowSpan='2'  dataField='rollNum' isKey  style={{align:'cente'}} >Group Name</th>
-                              <th className="thStyle"row='0' rowSpan='2'>Attendance</th>
-                              <th className="thStyle"row='0' rowSpan='2'>Discipline</th>
-                              <th className="thStyle"row='0' rowSpan='2'>Home Work</th>
-                              <th className="thStyle"row='0' rowSpan='2'>Total</th>
+                              <th className="thStyle" row='0' rowSpan='2'  dataField='rollNum' isKey  style={{align:'cente'}} >Group Name</th>
+                              <th className="thStyle" row='0' rowSpan='2'>Attendance</th>
+                              <th className="thStyle" row='0' rowSpan='2'>Discipline</th>
+                              <th className="thStyle" row='0' rowSpan='2'>Home Work</th>
+                              <th className="thStyle" row='0' rowSpan='2'>Total</th>
                             </tr>
                           </thead>
                             <tbody>

@@ -185,7 +185,7 @@ class GroupList extends Component {
                   <td className="thStyle" >
                     <ButtonGroup>
                       <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/groups/"+ group.id}>Edit</Button>
-                      <Button size="sm" color="danger" onClick={() => this.remove(group.id)}>Delete</Button>
+                      <Button size="sm" color="danger" onClick={() => this.remove(group.id)} disabled>Delete</Button>
                     </ButtonGroup>
                   </td>
                 </tr> ))}
