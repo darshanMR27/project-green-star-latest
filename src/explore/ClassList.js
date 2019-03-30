@@ -101,16 +101,15 @@ componentDidMount(){
                 <Table className="mt-4">
                   <thead>
                     <tr>
-                      <th width="20%">School</th>
-                      <th width="20%">Grade</th>
-                      <th width="20%">Action</th>
+                      <th className="thStyle" width="20%">Grade</th>
+                      <th className="thStyle" width="20%">Action</th>
                     </tr>
                   </thead>
                   <tbody style={{color: '#dee2e6'}}>
                   {grades.map(grade => (
                     <tr key={grade.id}>
-                        <td>{grade.label}</td>
-                        <td>
+                        <td className="thStyle">{grade.label}</td>
+                        <td className="thStyle">
                         <ButtonGroup>
                             <Button size="sm"  color="primary" onClick={() => this.hideHeader()}  tag={Link} to={"/grades/" + grade.id}>Edit</Button>
                             <Button size="sm"  color="danger" onClick={() => this.remove(grade.id)}>Delete</Button>

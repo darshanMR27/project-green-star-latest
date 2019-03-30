@@ -179,3 +179,8 @@ td.linebreak p {
    background-color: transparent;
    border: 1px solid white;
 }
+.monthPickerClass {
+  width:12.2em;
+  height:2.3em;
+  border:none;
+}

@@ -159,30 +159,30 @@ class GroupList extends Component {
                   <Select options={ sections } name="section" id="section" onChange={this.handleSectionChange} value={selectedSection}/>
               </td>
             </tr>                        
-            <Table className="mt-4">
+            <Table className="mt-4 tableStyle">
               <thead>
                 <tr>
-                  <th width="10%">Name</th>
-                  <th width="10%">School Name</th>
-                  <th width="10%">Class Name</th>
-                  <th width="10%">Section Name</th>
-                  <th width="10%">Student Name(s)</th>
-                  <th width="20%">Action</th>
+                  <th className="thStyle" width="10%">Name</th>
+                  <th className="thStyle" width="10%">School Name</th>
+                  <th className="thStyle" width="10%">Class Name</th>
+                  <th className="thStyle" width="10%">Section Name</th>
+                  <th className="thStyle" width="10%">Student Name(s)</th>
+                  <th className="thStyle" width="20%">Action</th>
                 </tr>
               </thead>
               <tbody style={{color: '#dee2e6'}}>
               {data.map(group => (
                 <tr key={group.id}>
-                  <td style={{whiteSpace: 'nowrap'}}>{group.label}</td>
-                  <td>{group.schoolName}</td>
-                  <td>{group.className}</td>
-                  <td>{group.sectionName}</td>
-                  <td>
+                  <td className="thStyle" style={{whiteSpace: 'nowrap'}}>{group.label}</td>
+                  <td className="thStyle">{group.schoolName}</td>
+                  <td className="thStyle">{group.className}</td>
+                  <td className="thStyle">{group.sectionName}</td>
+                  <td className="thStyle">
                       {group.studentNames.map(student => (
                         <tr>{student}</tr>
                       ))}
                   </td>
-                  <td>
+                  <td className="thStyle" >
                     <ButtonGroup>
                       <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/groups/"+ group.id}>Edit</Button>
                       <Button size="sm" color="danger" onClick={() => this.remove(group.id)}>Delete</Button>

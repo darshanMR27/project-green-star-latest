@@ -93,26 +93,26 @@ componentDidMount(){
         </div>
             <div style={showHide} >
                 <h2>List School</h2>
-                <Table className="mt-4 sortable">
+                <Table className="mt-4 tableStyle">
                   <thead>
                     <tr>
-                      <th width="20%">Name</th>
-                      <th width="20%">Max Grade or Class</th>
-                      <th width="20%">Adress</th>
-                      <th width="10%">Pin Code</th>
-                      <th width="10%">City</th>
-                      <th width="20%">Action</th>
+                      <th className="thStyle" width="20%">Name</th>
+                      <th className="thStyle" width="20%">Max Grade or Class</th>
+                      <th className="thStyle" width="20%">Adress</th>
+                      <th className="thStyle" width="10%">Pin Code</th>
+                      <th className="thStyle" width="10%">City</th>
+                      <th className="thStyle" width="20%">Action</th>
                     </tr>
                   </thead>
                   <tbody style={{color: '#dee2e6'}}>
                   {schools.map(school => (
                   <tr key={school.id}>
-                    <td style={{whiteSpace: 'nowrap'}}>{school.label}</td>
-                    <td>{school.maxClassGrade}</td>
-                    <td>{school.address}</td>
-                    <td>{school.pincode}</td>
-                    <td>{school.city}</td>
-                    <td> 
+                    <td className="thStyle" style={{whiteSpace: 'nowrap'}}>{school.label}</td>
+                    <td className="thStyle">{school.maxClassGrade}</td>
+                    <td className="thStyle">{school.address}</td>
+                    <td className="thStyle">{school.pincode}</td>
+                    <td className="thStyle">{school.city}</td>
+                    <td className="thStyle"> 
                       <ButtonGroup>
                         <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/schools/" + school.id}>Edit</Button>
                         <Button size="sm" color="danger" onClick={() => this.remove(school.id)}>Delete</Button>

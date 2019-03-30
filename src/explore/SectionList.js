@@ -120,22 +120,22 @@ componentDidMount(){
                           <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
                        </td>
                       </tr>
-                <Table className="mt-4">
+                <Table className="mt-4 tableStyle">
                   <thead>
                     <tr>
-                      <th width="20%">School</th>
-                      <th width="20%">Grade</th>
-                      <th width="20%">Section</th>
-                      <th width="20%">Action</th>
+                      <th className="thStyle" width="20%">School</th>
+                      <th className="thStyle" width="20%">Grade</th>
+                      <th className="thStyle" width="20%">Section</th>
+                      <th className="thStyle" width="20%">Action</th>
                     </tr>
                   </thead>
                   <tbody style={{color: '#dee2e6'}}>
                   {sections.map(section => (
                         <tr key={section.id}>
-                            <td style={{whiteSpace: 'nowrap'}}>{section.schoolName}</td>
-                            <td>{section.className}</td>
-                            <td>{section.label}</td>
-                            <td>
+                            <td className="thStyle" style={{whiteSpace: 'nowrap'}}>{section.schoolName}</td>
+                            <td className="thStyle">{section.className}</td>
+                            <td className="thStyle">{section.label}</td>
+                            <td className="thStyle">
                             <ButtonGroup>
                                 <Button size="sm" color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/sections/" + section.id}>Edit</Button>
                                 <Button size="sm" color="danger" onClick={() => this.remove(section.id)}>Delete</Button>
