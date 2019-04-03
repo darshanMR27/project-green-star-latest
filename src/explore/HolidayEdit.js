@@ -5,41 +5,57 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {API_PROXY_URL} from "../Constants";
 
+function validate(holidayDate, holidayDesc) {
+  // we are going to store errors for all fields
+  // in a signle array
+  const errors = [];
+  if(holidayDate === '' || holidayDate === "undefined"){
+      errors.push("Holiday Date must be selected");
+  }
+  if(holidayDesc === '' || holidayDesc === "undefined"){
+    errors.push("Holiday description cannot be empty");
+  }
+  return errors;
+}
 class HolidayEdit extends Component {
   emptyItem = {
       holidayDate: new Date(),
-      holidayDesc:""
+      holidayDesc:"",
+      errors:[]
   };
 
   state = {
     holidayDate: new Date(),
     holidayDesc:"",
-    isPublic:true
+    //isPublic:true,
+    errors:[]
   }
 
   constructor(props) {
     super(props);
     this.state = {
       item: this.emptyItem,
-      isPublic:false
+      //isPublic:false,
+      errors:[]
     };
     this.onChange = this.onChange.bind(this);
     this.holidaySubmit = this.holidaySubmit.bind(this);
-    this.toggleChange = this.toggleChange.bind(this);
+    //this.toggleChange = this.toggleChange.bind(this);
   }
 
   async componentDidMount() {
     //this.setState({isPublic: this.state.checked});
     //alert(this.props.match.params.id)
     if (this.props.match.params.id !== 'new') {
-      const holiday = await (await fetch(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/holiday/${this.props.match.params.id}`)).json();
+      const holiday = await (await fetch(API_PROXY_URL+`/api/v1/holiday/${this.props.match.params.id}`)).json();
       console.log(holiday);
       this.setState(
         {item: holiday,
           holidayDate:holiday.date,
-          holidayDesc:holiday.details,
-          isPublic:holiday.publicHoliday
+          holidayDesc:holiday.details
+          //isPublic:holiday.publicHoliday
         });
     }
     
@@ -51,11 +67,11 @@ class HolidayEdit extends Component {
     });
   }
 
-  toggleChange = (e) => {
-    this.setState({
-      isPublic: e.target.checked,
-    });
-  }
+  // toggleChange = (e) => {
+  //   this.setState({
+  //     isPublic: e.target.checked,
+  //   });
+  // }
 
   handleHolidayDate = holidayDate => this.setState({ holidayDate })
 
@@ -63,8 +79,13 @@ class HolidayEdit extends Component {
     event.preventDefault();
     const {holidayDate, holidayDesc} = this.state;  
     const selId = this.props.match.params.id;
+    const errors = validate(holidayDate, holidayDesc);
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return false;
+    } else {
     if (selId !== 'new') {  
-      return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/holiday/update', {
+      return fetch(API_PROXY_URL+`/api/v1/holiday/update`, {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
@@ -73,8 +94,8 @@ class HolidayEdit extends Component {
         body: JSON.stringify({
           id: selId,
           date: holidayDate,
-          details: holidayDesc,
-          publicHoliday: this.state.isPublic
+          details: holidayDesc
+          //publicHoliday: this.state.isPublic
         })
       }).then(response => {
         this.setState({showUpdateForm: true});
@@ -87,7 +108,7 @@ class HolidayEdit extends Component {
       });
     } else {
       const formattedDate = new Intl.DateTimeFormat("fr-ca", {year: 'numeric', month: '2-digit',day: '2-digit'}).format(holidayDate);
-      return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/holiday/new', {
+      return fetch(API_PROXY_URL+`/api/v1/holiday/new`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -95,8 +116,8 @@ class HolidayEdit extends Component {
         },
         body: JSON.stringify({
           date: formattedDate,
-          details: holidayDesc,
-          publicHoliday: this.state.isPublic
+          details: holidayDesc
+          //publicHoliday: this.state.isPublic
         })
       }).then(response => {
         this.setState({showAddForm: true});
@@ -109,9 +130,24 @@ class HolidayEdit extends Component {
       });
     }
   }
+}
+
+resetHoliday = async () => {
+  this.setState({
+    holidayDesc:'',
+    errors:[],
+    error:"",
+    showAddForm:false,
+    showErrorForm: false,
+    showUpdateForm:false
+  });
+  this.setState({
+    error:''
+  });
+}
 
   render() {
-    const {item,  holidayDate, holidayDesc, error} = this.state;
+    const {item, holidayDesc, error, errors} = this.state;
     const showAddSchool = {
       'display': this.state.showAddForm ? 'block' : 'none'
     };
@@ -126,6 +162,18 @@ class HolidayEdit extends Component {
       <Container>
         {title}
         <Form onSubmit={this.holidaySubmit}>
+            {errors.map(error =>(
+                <p key={error} className="errorText">{error}</p>
+            ))}
+            <div style={showAddSchool}>
+              <p style={{color: 'darkgreen'}}>Holiday Date Added successfully</p>
+            </div>
+            <div style={showErrorSchool}>
+                <p style={{color: 'red'}}>{error} while adding / updating holiday</p>
+            </div>
+            <div style={showUpdateSchool}>
+                <p style={{color: 'blue'}}>Holiday Date Updated successfully</p>
+            </div>
           <div className="row">
                 <FormGroup className="col-md-3 mb-3">
                     <Label for="holidayDate" style={{color:'white'}}>Holiday Date</Label>
@@ -144,17 +192,8 @@ class HolidayEdit extends Component {
             <div>
               <FormGroup>   
                 <Button color="primary" type="submit">Save</Button>{' '}
-                <Button color="success" tag={Link} to="/holidays">Cancel</Button>
+                <Button color="secondary" onClick={() => this.resetHoliday()}>reset</Button>
               </FormGroup>
-            </div>
-            <div style={showAddSchool}>
-              <p style={{color: 'darkgreen'}}>Holiday Date Added successfully</p>
-            </div>
-            <div style={showErrorSchool}>
-                <p style={{color: 'red'}}>{error} while adding / updating holiday</p>
-            </div>
-            <div style={showUpdateSchool}>
-                <p style={{color: 'blue'}}>Holiday Date Updated successfully</p>
             </div>
         </Form>
       </Container>

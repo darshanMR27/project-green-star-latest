@@ -5,6 +5,8 @@ import Select from 'react-select';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
+import {API_PROXY_URL} from "../Constants";
+
 class ClassList extends Component {
   constructor(props) {
     super(props);
@@ -17,13 +19,11 @@ class ClassList extends Component {
     selectedItems: []
   };
   this.handleSchoolChange = this.handleSchoolChange.bind(this);
-  this.remove = this.remove.bind(this);
+  //this.remove = this.remove.bind(this);
 }
 componentDidMount(){
-  this.setState({showForm: false});
-  this.setState({showSchoolForm: true});
-  
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
+  this.setState({showForm: false, showSchoolForm: true});
+    return axios.get(API_PROXY_URL+`/api/v1/school/`)
     .then(result => {
       console.log(result);
       this.setState({
@@ -39,12 +39,13 @@ componentDidMount(){
   handleSchoolChange = (selectedSchool) => {
     // alert("selectedGrade="+selectedSchool.id);
      this.setState({ selectedSchool });
-     return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class/school/`+selectedSchool.id)
+     return axios.get(API_PROXY_URL+`/api/v1/class/school/`+selectedSchool.id)
      .then(result => {
        console.log(result);
        this.setState({
-         grades: result.data, error:false});
-         this.setState({showForm: true});
+         grades: result.data, 
+         error:false,
+         showForm: true});
        }).catch(error => {
        console.error("error", error);
        this.setState({
@@ -58,25 +59,23 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
-    this.setState({showForm: false});
-    this.setState({groupName:""});
-    this.setState({showForm: false});
-    this.setState({showSchoolForm: false});
-    //this.props.history.push('/groups');
+    document.getElementById("AddClass").style.display="none";
+    this.setState({showForm: false,
+    showSchoolForm: false});
   }
 
-  async remove(id) {
-    await fetch(`/api/class/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(() => {
-      let updatedClasses = [...this.state.grades].filter(i => i.id !== id);
-      this.setState({grades: updatedClasses});
-    });
-  }
+  // async remove(id) {
+  //   await fetch(`/api/class/${id}`, {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }).then(() => {
+  //     let updatedClasses = [...this.state.grades].filter(i => i.id !== id);
+  //     this.setState({grades: updatedClasses});
+  //   });
+  // }
 
   render() {
     const {grades, selectedSchool,
@@ -94,7 +93,7 @@ componentDidMount(){
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()} tag={Link} to="/grades/new">Add Class</Button>{'     '}
+                    <Button id="AddClass" color="success" onClick={() => this.hideHeader()} tag={Link} to="/grades/new">Add Class</Button>{'     '}
                   </FormGroup>
               </Form>
             </Container>

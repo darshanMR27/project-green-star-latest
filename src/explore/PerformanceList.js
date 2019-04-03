@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
 import DatePicker from "react-datepicker";
+import {API_PROXY_URL} from "../Constants";
 class PerformanceList extends Component {
   emptyItem = {
     school:"",
@@ -28,35 +29,23 @@ class PerformanceList extends Component {
     groups:[],
     students:[],
     selectDate: new Date(),
-    isAttendance: true,
-    isDiscipline: true,
-    isHomeWork: true,
     selected: {}
   }
   constructor(props) {
     super(props);
     this.state= {
-      students:[],
-      isAttendance: false,
-      isDiscipline: false,
-      isHomeWork: false
+      students:[]
     };
     this.handleSchoolChange = this.handleSchoolChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleSectionChange = this.handleSectionChange.bind(this);
     this.handleGroupChange = this.handleGroupChange.bind(this);
     this.performSubmit = this.performSubmit.bind(this);
-    this.toggleChangeAtt = this.toggleChangeAtt.bind(this);
-    this.toggleChangeDis = this.toggleChangeDis.bind(this);
-    this.toggleChangeHome = this.toggleChangeHome.bind(this);
-    this.toggleRow = this.toggleRow.bind(this);
 }
-
-
 
 componentDidMount(){
     this.setState({showForm: false});
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
+    return axios.get(API_PROXY_URL+`/api/v1/school/`)
     .then(result => {
       console.log(result);
       this.setState({
@@ -68,11 +57,11 @@ componentDidMount(){
       });
     });
   }
+
   handleSchoolChange = (selectedSchool) => {
-//        alert("selectedGrade="+selectedSchool.id);
     this.setState({ selectedSchool });
     const bodyFormData = new FormData();
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class/school/`+selectedSchool.id)
+     return axios.get(API_PROXY_URL+`/api/v1/class/school/`+selectedSchool.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -84,10 +73,10 @@ componentDidMount(){
       });
     });
   }
+  
   handleClassChange = (selectedGrade) => {
-   // alert("selectedGrade="+selectedGrade.id);
     this.setState({ selectedGrade });
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/section/class/`+selectedGrade.id)
+    return axios.get(API_PROXY_URL+`/api/v1/section/class/`+selectedGrade.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -99,10 +88,10 @@ componentDidMount(){
       });
     });
   }
+
   handleSectionChange = (selectedSec) => {
     this.setState({ selectedSec });
-    //alert("selectedSection="+selectedSection);
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/group/section/`+selectedSec.id)
+     return axios.get(API_PROXY_URL+`/api/v1/group/section/`+selectedSec.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -121,8 +110,7 @@ componentDidMount(){
 
   handleGroupChange = (selectedGroup) => {
     this.setState({ selectedGroup });
-    //alert("selectedSection="+selectedSection);
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/student/group/`+selectedGroup.id)
+    return axios.get(API_PROXY_URL+`/api/v1/student/group/`+selectedGroup.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -147,7 +135,6 @@ componentDidMount(){
   hideHeader = async () => {
     this.setState({showForm: false});
     this.setState({groupName:""});
-    //this.props.history.push('/groups');
   }
 
   handleSelectDateChange = selectDate => this.setState({ selectDate })
@@ -158,116 +145,55 @@ componentDidMount(){
     });
   }
 
-  toggleRow = (studentName) => {
-    const newSelected = Object.assign({}, this.state.selected);
-    newSelected[studentName] = !this.state.selected[studentName];
-    this.setState({
-      isAttendance: newSelected
-    });
-  }
-  
-  toggleChangeAtt = (studentName) => {
-      const newSelected = Object.assign({}, this.state.isAttendance);
-      newSelected[studentName] = !this.state.isAttendance[studentName];
-      this.setState({
-        isAttendance: newSelected
-      });
-      // if(this.state.isAttendance == true){
-      //   this.setState({showDisHomeForm: true});
-      // }
-      
-  }
-    // alert(this.state.isAttendance);
-    // alert(this.state.isDiscipline);
-    // alert(this.state.isHomeWork);
-    // data.push(JSON.stringify ({
-    //     student:studentName,
-    //     attendance:this.state.isAttendance,
-    //     discipline:this.state.isDiscipline,
-    //     homework:this.state.isHomeWork
-    // }));
-    // data.forEach (selData =>
-    //   console.log('Darshan = '+selData)
-    // )
-  
-  toggleChangeDis = (studentName) => {
-    const newSelected = Object.assign({}, this.state.isDiscipline);
-    newSelected[studentName] = !this.state.isDiscipline[studentName];
-    this.setState({
-      isDiscipline: newSelected
-    });
-  }
-  
-  toggleChangeHome = (studentName) => {
-    const newSelected = Object.assign({}, this.state.isHomeWork);
-    newSelected[studentName] = !this.state.isHomeWork[studentName];
-    this.setState({
-      isHomeWork: newSelected
-    });
-  }
 
   performSubmit = async () => {
-    const{selectDate, students, isAttendance, isDiscipline, isHomeWork} = this.state;
-    let formatSelectedDate = new Intl.DateTimeFormat("fr-ca", {year: 'numeric', month: '2-digit',day: '2-digit'}).format(selectDate);
-    let arr = [];
-    // alert(this.state.isAttendance);
-    // alert(this.state.isDiscipline);
-    // alert(this.state.isHomeWork);
-    // alert(isAttendance);
-    // alert(isDiscipline);
-    // alert(isHomeWork);
-    // students.forEach( student =>
-    //   alert(student.label)
-    // )
-    // for (var key in this.state) {
-    //   if(this.state[key] === true) {
-    //     arr.push(1);
-    //   } else {
-    //     arr.push(0);
-    //   }
-    // }
-    // let data = {
-    //   check: arr.toString() 
-    // };
-    // arr.forEach( selectedOption => 
-    //   console.log( `Selected: ${selectedOption}` ) 
-    // );
-    //console.log("Data = "+data+", selected Date = "+formatSelectedDate);
+    const{selectDate, students} = this.state;
+    var length = students.length;
+    let performanceData = new Array(length);
+    let Data = {}
+    let formattedJoinDate = new Intl.DateTimeFormat("fr-ca", {year: 'numeric', month: '2-digit',day: '2-digit'}).format(selectDate);
      
-      // return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/roles/add', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Accept': 'application/json',
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     label: roleName,
-      //     privilages: this.state.selectedItems,
-      //     password:encryptedPwd
-      //   })
-      // }).then(response => {
-      //   this.setState({showAddForm: true});
-      // }).catch(error => {
-      //   this.setState({showErrorForm: true});
-      //   console.error("error", error);
-      //   this.setState({
-      //     error:`${error}`
-      //   });
-      // });
+    for (var i = 0;i<students.length;i++){
+      Data = {};
+      Data.studentId = students[i].id;
+      Data.label = students[i].label;
+      performanceData[i] = Data;
+      performanceData[i].attendance = document.getElementById("performace").children[1].children[i].children[1].children[0].checked;
+      performanceData[i].discipline = document.getElementById("performace").children[1].children[i].children[2].children[0].checked;
+      performanceData[i].homeWork = document.getElementById("performace").children[1].children[i].children[3].children[0].checked;
+      performanceData[i].date = formattedJoinDate;
+    }
+     
+    return fetch(API_PROXY_URL+`/api/v1/performance`, {
+       method: 'POST',
+       headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+       },
+       body: JSON.stringify(performanceData)
+      }).then(response => {
+        this.setState({showAddForm: true});
+      }).catch(error => {
+        this.setState({showErrorForm: true});
+        console.error("error", error);
+        this.setState({
+          error:`${error}`
+        });
+      });
   }
 
-  async remove(id) {
-    await fetch(`/api/group/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(() => {
-      let updatedGroups = [...this.state.groups].filter(i => i.id !== id);
-      this.setState({groups: updatedGroups});
-    });
-  }
+  // async remove(id) {
+  //   await fetch(`/api/group/${id}`, {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }).then(() => {
+  //     let updatedGroups = [...this.state.groups].filter(i => i.id !== id);
+  //     this.setState({groups: updatedGroups});
+  //   });
+  // }
 
   render() {
     const {error, students, selectedSchool, selectedGrade, 
@@ -313,7 +239,7 @@ componentDidMount(){
             </Form>
             </Container>
             <div style={showHide}>                      
-              <Table className="mt-4 tableStyle">
+              <Table id= "performace" className="mt-4 tableStyle">
                 <thead>
                   <tr>
                     <th className="thStyle" width="10%">Student Name</th>
@@ -326,19 +252,17 @@ componentDidMount(){
                 {students.map(student => (
                   <tr key={student.id}>
                     <td className="thStyle" style={{whiteSpace: 'nowrap'}}>{student.label}</td>
-                    <td className="thStyle"><Input type="checkbox" checked={this.state.isAttendance[student.label] === true} onChange={() => this.toggleChangeAtt(student.label)} /></td>
-                    <td className="thStyle"><Input type="checkbox" checked={this.state.isDiscipline[student.label] === true} onChange={() => this.toggleChangeDis(student.label)} /></td>
-                    <td className="thStyle"><Input type="checkbox" checked={this.state.isHomeWork[student.label] === true} onChange={() => this.toggleChangeHome(student.label)} /></td>
+                    <td className="thStyle"><Input type="checkbox"  /></td>
+                    <td className="thStyle"><Input type="checkbox"  /></td>
+                    <td className="thStyle"><Input type="checkbox"  /></td>
                   </tr> ))}
                 </tbody>
               </Table>
-              <Button color="success" onClick={() => this.performSubmit()}>Save</Button>{'     '}
-              <Button color="success" tag={Link} to="/performance">Cancel</Button>
+              <Button color="success" onClick={() => this.performSubmit()}>Save</Button>
             </div>
           </div>
       </div>
     );
   }
 }
-
 export default PerformanceList;

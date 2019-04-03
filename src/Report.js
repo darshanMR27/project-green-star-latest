@@ -5,7 +5,7 @@ import Select from 'react-select';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
 import DatePicker from "react-datepicker";
-import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table";
+import {API_PROXY_URL} from "./Constants";
 
 function date_diff_indays (d1, d2) {
   var diff = Date.parse(d2) - Date.parse(d1);
@@ -14,8 +14,6 @@ function date_diff_indays (d1, d2) {
 var theadRows = [];
 var headSecondRow = [];
 var tbodyRows = [];
-var nameData = [];
-var initialLoad = false;
 var myFunctionFlag = false;
 var attendance;
 var discipline;
@@ -23,7 +21,7 @@ var homeWork;
 var performanceLength ;
 
 function reportFunction(reportData, performanceLength){
-   if(myFunctionFlag!=true){
+   if(myFunctionFlag!==true){
        for(var i=0;i<reportData.length;i++){
           
     
@@ -33,7 +31,7 @@ function reportFunction(reportData, performanceLength){
                   <td className="thStyle"row='1'>{reportData[i].caste}</td>);
                // tbodyRows.push({nameData});        
           for(var j=0;j<performanceLength;j++){
-            if(reportData[i].performanceData[j] == undefined ){
+            if(reportData[i].performanceData[j] === undefined ){
               attendance = "";
               discipline = "";
               homeWork = "";
@@ -99,7 +97,7 @@ constructor(props) {
 
 componentDidMount(){
     this.setState({showIndReportSel: false});
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
+    return axios.get(API_PROXY_URL+`/api/v1/school/`)
     .then(result => {
       console.log(result);
       this.setState({
@@ -122,30 +120,23 @@ componentDidMount(){
     this.setState({selectedReportType});
     var reportTypeId = selectedReportType.id;
     if(reportTypeId === 1){
-      this.setState({showIndReportSel: true});
-      this.setState({showGrpReportSel: true});
-      this.setState({showForm: false});
-      this.setState({selectedSchool:""});
-      this.setState({selectedGrade:""});
-      this.setState({selectedSec:""});
-      this.setState({selectedGroup:""});
-      this.setState({showIndRepForm: false});
-      this.setState({showGrpRepForm: false});
-      this.setState({showSecRepForm: false});
+      this.setState({showIndReportSel: true,
+        showGrpReportSel: true, showForm: false,
+        selectedSchool:"", selectedGrade:"", 
+        selectedSec:"", selectedGroup:"", 
+        showIndRepForm: false, showGrpRepForm: false,
+        showSecRepForm: false});
     } else if(reportTypeId === 2 || reportTypeId === 3){
-      this.setState({showGrpReportSel: false});
-      this.setState({showIndReportSel: true});
-      this.setState({showForm: false});
-      this.setState({selectedSchool:""});
-      this.setState({selectedGrade:""});
-      this.setState({showIndRepForm: false});
-      this.setState({showGrpRepForm: false});
-      this.setState({showSecRepForm: false});
+      this.setState({showGrpReportSel: false,
+        showIndReportSel: true, showForm: false,
+        selectedSchool:"", selectedGrade:"",
+        showIndRepForm: false, showGrpRepForm: false,
+        showSecRepForm: false}); 
     }
   }
   handleSchoolChange = (selectedSchool) => {
     this.setState({ selectedSchool });
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class/school/`+selectedSchool.id)
+    return axios.get(API_PROXY_URL+`/api/v1/class/school/`+selectedSchool.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -159,7 +150,7 @@ componentDidMount(){
   }
   handleClassChange = (selectedGrade) => {
     this.setState({ selectedGrade });
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/section/class/`+selectedGrade.id)
+    return axios.get(API_PROXY_URL+`/api/v1/section/class/`+selectedGrade.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -173,38 +164,34 @@ componentDidMount(){
   }
   handleSectionChange = (selectedSec) => {
     this.setState({ selectedSec });
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/group/section/`+selectedSec.id)
+    return axios.get(API_PROXY_URL+`/api/v1/group/section/`+selectedSec.id)
     .then(result => {
       console.log(result);
       this.setState({
         groups: result.data,
-        loading:false,
         error:false
       });
     }).catch(error => {
       console.error("error", error);
       this.setState({
-        error:`${error}`,
-        loading:false
+        error:`${error}`
       });
     });
   }
 
   handleGroupChange = (selectedGroup) => {
     this.setState({ selectedGroup });
-    return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/student/group/`+selectedGroup.id)
+    return axios.get(API_PROXY_URL+`/api/v1/student/group/`+selectedGroup.id)
     .then(result => {
       console.log(result);
       this.setState({
         students: result.data,
-        loading:false,
         error:false
       });
     }).catch(error => {
       console.error("error", error);
       this.setState({
-        error:`${error}`,
-        loading:false
+        error:`${error}`
       });
     });
   }
@@ -222,85 +209,69 @@ componentDidMount(){
     let diffDate = date_diff_indays(fromDate, toDate);
     let url = null;
     if(diffDate > 6){
-      this.setState({showErrorForm: true});
-      this.setState({showIndRepForm: false});
-      this.setState({showGrpRepForm: false});
-      this.setState({showSecRepForm: false});
-      this.setState({
-        error:'Choose date range less than or equal to 6 days'
-      });
+      this.setState({showErrorForm: true,
+        showIndRepForm: false, showGrpRepForm: false,
+        showSecRepForm: false, error:'Choose date range less than or equal to 6 days'});
     } else {
       if(selReportTypeId === 1){
-          url = "http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/reports/group/"+selectedGroupId;
-          axios.get(url+"?fromDate="+fromDate+"&toDate="+toDate).then(result => {
+          url = API_PROXY_URL+`/api/v1/reports/group/`+selectedGroupId;
+          axios.get(url+`?fromDate=`+fromDate+`&toDate=`+toDate).then(result => {
             console.log('Report Data = '+result);
             this.setState({
                 indReportData: result.data,
-                loading:false,
                 error:false
               });
-              this.setState({showErrorForm: false});
-              this.setState({showIndRepForm: true});
-              this.setState({showGrpRepForm: false});
-              this.setState({showSecRepForm: false});
+              this.setState({showErrorForm: false,
+                showIndRepForm: true, 
+                showGrpRepForm: false,
+                showSecRepForm: false});
             }).catch(error => {
               console.error("error", error);
-              this.setState({showErrorForm: true});
-              this.setState({
-              error:`${error}`,
-              loading:false
-            });
+              this.setState({showErrorForm: true,
+                error:`${error}`});
           });
       } else if(selReportTypeId === 2){
-          url = "http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/reports/cls-group/"+selectedGradeId;
-          axios.get(url+"?fromDate="+fromDate+"&toDate="+toDate).then(result => {
+          url = API_PROXY_URL+`/api/v1/reports/cls-group/`+selectedGradeId;
+          axios.get(url+`?fromDate=`+fromDate+`&toDate=`+toDate).then(result => {
             console.log('Report Data = '+result);
             this.setState({
                 grpReportData: result.data,
                 loading:false,
                 error:false
               });
-              this.setState({showErrorForm: false});
-              this.setState({showIndRepForm: false});
-              this.setState({showGrpRepForm: true});
-              this.setState({showSecRepForm: false});
+              this.setState({showErrorForm: false,
+                showIndRepForm: false,
+                showGrpRepForm: true,
+                showSecRepForm: false});
             }).catch(error => {
               console.error("error", error);
-              this.setState({showErrorForm: true});
-              this.setState({
-              error:`${error}`,
-              loading:false
-            });
+              this.setState({showErrorForm: true,
+                error:`${error}`});
           });
       } else if(selReportTypeId === 3) {
-        url = "http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/reports/cls-section/"+selectedGradeId;
-        axios.get(url+"?fromDate="+fromDate+"&toDate="+toDate).then(result => {
+        url = API_PROXY_URL+`/api/v1/reports/cls-section/`+selectedGradeId;
+        axios.get(url+`?fromDate=`+fromDate+`&toDate=`+toDate).then(result => {
           console.log('Report Data = '+result);
           this.setState({
               secReportData: result.data,
-              loading:false,
               error:false
             });
-            this.setState({showErrorForm: false});
-            this.setState({showIndRepForm: false});
-            this.setState({showGrpRepForm: false});
-            this.setState({showSecRepForm: true});
+            this.setState({showErrorForm: false,
+              showIndRepForm: false, 
+              showGrpRepForm: false,
+              showSecRepForm: true});
           }).catch(error => {
             console.error("error", error);
-            this.setState({showErrorForm: true});
-            this.setState({
-            error:`${error}`,
-            loading:false
+            this.setState({showErrorForm: true, 
+            error:`${error}`
           });
         });
       } else {
-        this.setState({showErrorForm: true});
-        this.setState({showIndRepForm: false});
-        this.setState({showGrpRepForm: false});
-        this.setState({showSecRepForm: false});
-        this.setState({
-          error:'Unable to view report, please select atleast school and class'
-        }); 
+        this.setState({showErrorForm: true,
+          showIndRepForm: false, 
+          showGrpRepForm: false, 
+          showSecRepForm: false,
+          error:'Unable to view report, please select atleast school and class'});
       }
     }
   }
@@ -350,7 +321,7 @@ componentDidMount(){
         return (
           <div className="dashboard">
             <Container>
-            <Form className="row">
+              <Form className="row">
                 <FormGroup className="col-md-3 mb-3">
                     <Label for="fromDate" style={{color:'white'}}>From Date</Label>
                     <DatePicker selected={this.state.fromDate} className="datePicker" placeholderText="Select From Date" onChange={this.handleFromDateChange} dateFormat="yyyy-MM-dd"/>
@@ -364,7 +335,6 @@ componentDidMount(){
                     <Select options={ reportTypes } name="reportType" id="reportType" onChange={this.handleReportTypeChange} value={selectedReportType}/>
                 </FormGroup>
               </Form>
-              </Container>
               <div style={showIndReportSel}>
                   <Form className="row" >
                     <FormGroup className="col-md-3 mb-3">
@@ -387,28 +357,29 @@ componentDidMount(){
                         <Button color="primary" className="goButton"  onClick={() => this.onSubmit()}>View</Button>{' '}
                     </FormGroup>
                   </Form>
-              </div>
+                </div>
+              </Container>
               <div style={showErrorReport}>
                   <p style={{color: 'red'}}>{error}</p>
               </div>
               <div className="report" style={showIndRepHide}>
                   {<table data={ indReportData } className="tableStyle" >
-            <thead><tr>
-                    <th className="thStyle" row='0' rowSpan='2'  dataField='rollNum' isKey  style={{align:'cente'}} >Roll No</th>
-                    <th className="thStyle" row='0' rowSpan='2' dataField="studentName">Student Name</th>
-                    <th className="thStyle" row='0' rowSpan='2'  dataField='caste'>Caste</th>{theadRows}
-                    
-                    </tr>
-                    <tr>{headSecondRow  }</tr>
-                    </thead> 
-                    <tbody>
-                      {tbodyRows}
-                    </tbody>
-                      {
-                      thc
-                    }
-            </table> }
-            </div>
+                    <thead>
+                      <tr>
+                        <th className="thStyle" row='0' rowSpan='2'  dataField='rollNum' isKey  style={{align:'cente'}} >Roll No</th>
+                        <th className="thStyle" row='0' rowSpan='2' dataField="studentName">Student Name</th>
+                        <th className="thStyle" row='0' rowSpan='2'  dataField='caste'>Caste</th>{theadRows}
+                      </tr>
+                      <tr>{headSecondRow  }</tr>
+                      </thead> 
+                      <tbody>
+                        {tbodyRows}
+                      </tbody>
+                        {
+                        thc
+                      }
+                  </table> }
+              </div>
             <div className="report" style={showGrpRepHide}>
                     {<table className="tableStyle" >
                       <thead><tr>

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { Button, Label, Container, Form, FormGroup} from 'reactstrap';
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
@@ -9,6 +8,7 @@ import MonthPickerInput from 'react-month-picker-input';
 import 'react-month-picker-input/dist/react-month-picker-input.css';
 import "./cssstyles/Common.css";
 import "./cssstyles/index.css";
+import {API_PROXY_URL} from "./Constants";
 
 function drawAttendanceStar(attendanceDetails, ctx) {
   //alert(attendanceDetails.length);
@@ -1166,6 +1166,8 @@ class Dashboard extends Component {
         groups:[],
         students:[],
         attendanceDetails:[],
+        cities:[],
+        criterias:[{"id":1,"label":"By City"},{"id":2,"label":"By Others"}]
     }
     constructor(props) {
         super(props);
@@ -1173,26 +1175,18 @@ class Dashboard extends Component {
         this.handleClassChange = this.handleClassChange.bind(this);
         this.handleSectionChange = this.handleSectionChange.bind(this);
         this.handleGroupChange = this.handleGroupChange.bind(this);
+        this.handleStudentChange = this.handleStudentChange.bind(this);
+        this.handleCityChange = this.handleCityChange.bind(this);
+        this.handleCriteriaChange = this.handleCriteriaChange.bind(this);
     }
 
     componentDidMount(){
         this.setState({showForm: false});
-        return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
-        .then(result => {
-          console.log(result);
-          this.setState({
-            schools: result.data, error:false});
-          }).catch(error => {
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
-          });
-        });
       }
+
       handleSchoolChange = (selectedSchool) => {
-//        alert("selectedGrade="+selectedSchool.id);
         this.setState({ selectedSchool });
-        return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class/school/`+selectedSchool.id)
+        return axios.get(API_PROXY_URL+`/api/v1/class/school/`+selectedSchool.id)
         .then(result => {
           console.log(result);
           this.setState({
@@ -1207,7 +1201,7 @@ class Dashboard extends Component {
       handleClassChange = (selectedGrade) => {
        // alert("selectedGrade="+selectedGrade.id);
         this.setState({ selectedGrade });
-        return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/section/class/`+selectedGrade.id)
+        return axios.get(API_PROXY_URL+`/api/v1/section/class/`+selectedGrade.id)
         .then(result => {
           console.log(result);
           this.setState({
@@ -1222,19 +1216,17 @@ class Dashboard extends Component {
       handleSectionChange = (selectedSec) => {
         this.setState({ selectedSec });
         //alert("selectedSection="+selectedSection);
-        return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/group/section/`+selectedSec.id)
+        return axios.get(API_PROXY_URL+`/api/v1/group/section/`+selectedSec.id)
         .then(result => {
           console.log(result);
           this.setState({
             groups: result.data,
-            loading:false,
             error:false
           });
         }).catch(error => {
           console.error("error", error);
           this.setState({
-            error:`${error}`,
-            loading:false
+            error:`${error}`
           });
         });
       }
@@ -1242,21 +1234,23 @@ class Dashboard extends Component {
       handleGroupChange = (selectedGroup) => {
         this.setState({ selectedGroup });
         //alert("selectedSection="+selectedSection);
-        return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/student/group/`+selectedGroup.id)
+        return axios.get(API_PROXY_URL+`/api/v1/student/group/`+selectedGroup.id)
         .then(result => {
           console.log(result);
           this.setState({
             students: result.data,
-            loading:false,
             error:false
           });
         }).catch(error => {
           console.error("error", error);
           this.setState({
-            error:`${error}`,
-            loading:false
+            error:`${error}`
           });
         });
+      }
+
+      handleCityChange = (selectedCity) => {
+        this.setState({ selectedCity });
       }
 
       handleStudentChange = (selectedStudent) => {
@@ -1273,13 +1267,10 @@ class Dashboard extends Component {
         //Create Discipline star
         const disCanvas = this.refs.disCanvas;
         const ctx2 = disCanvas.getContext("2d");
-        const selectedGroupId = this.state.selectedGroup.id;
-        //alert('Group = ' +selectedGroupId);
-        const selectedStudId = this.state.selectedStudent.id;
-        //alert('Student = ' +selectedStudId);
-        
-        if(selectedStudId !== undefined){
-          axios.get("http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/star/student/"+selectedStudId+"?month="+this.state.starDateFormat)
+        const criteriaId = this.state.selectedCriteria.id;
+        if(criteriaId === 1){
+          const selCity = this.state.selectedCity.label;
+          axios.get(API_PROXY_URL+`/api/v1/star/city/`+selCity+`?month=`+this.state.starDateFormat)
           .then(result => {
             console.log(result);
             drawAttendanceStar(result.data.attendanceDetails, ctx);
@@ -1287,62 +1278,121 @@ class Dashboard extends Component {
             drawDisciplineStar(result.data.desciplineDetails, ctx2);
             this.setState({
                 data: result.data,
-                loading:false,
                 error:false
               });
           }).catch(error => {
             console.error("error", error);
             this.setState({
-              error:`${error}`,
-              loading:false
+              error:`${error}`
             });
           });  
-          this.setState({showForm: true}); 
+          this.setState({showForm: true});
         } else {
-          axios.get("http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/star/group/"+selectedGroupId+"?month="+this.state.starDateFormat)
-          .then(result => {
-            console.log(result);
-            drawAttendanceStar(result.data.attendanceDetails, ctx);
-            drawHomeWorkStar(result.data.homeWorkDetails, ctx1);
-            drawDisciplineStar(result.data.desciplineDetails, ctx2);
-            this.setState({
-                data: result.data,
-                loading:false,
-                error:false
-              });
-          }).catch(error => {
-            console.error("error", error);
-            this.setState({
-              error:`${error}`,
-              loading:false
-            });
-          });  
-          this.setState({showForm: true}); 
-        }  
-      }
+          const selectedGroupId = this.state.selectedGroup.id;
+          const selectedStudId = this.state.selectedStudent.id;
+          const selectedSecId = this.state.selectedSec.id;
+          const selectedSchoolId = this.state.selectedSchool.id;
+          const selectedGradeId = this.state.selectedGrade.id;
+          var url = null;
+          if(selectedSchoolId !== undefined){
+            url = API_PROXY_URL+`/api/v1/star/school/`+selectedSchoolId;
+            this.setState({showForm: true}); 
+            if(selectedGradeId !== undefined){
+              url = API_PROXY_URL+`/api/v1/star/class/`+selectedGradeId;
+              this.setState({showForm: true}); 
+              if(selectedSecId !== undefined) {
+                url = API_PROXY_URL+`/api/v1/star/section/`+selectedSecId;
+                this.setState({showForm: true}); 
+                if(selectedGroupId !== undefined) {
+                  url = API_PROXY_URL+`/api/v1/star/group/`+selectedGroupId;
+                  this.setState({showForm: true}); 
+                  if(selectedStudId !== undefined){
+                    url = API_PROXY_URL+`/api/v1/star/student/`+selectedStudId;
+                    this.setState({showForm: true}); 
+                  } 
+                } 
+              }
+            }
+            axios.get(url+`?month=`+this.state.starDateFormat)
+              .then(result => {
+                console.log(result);
+                drawAttendanceStar(result.data.attendanceDetails, ctx);
+                drawHomeWorkStar(result.data.homeWorkDetails, ctx1);
+                drawDisciplineStar(result.data.desciplineDetails, ctx2);
+                this.setState({
+                    data: result.data,
+                    error:false
+                  });
+              }).catch(error => {
+                console.error("error", error);
+                this.setState({
+                  error:`${error}`
+                });
+              }); 
+          } 
+          else {
+            this.setState({showErrorForm: true, 
+              showForm: false, 
+              error:'Unable to view performance star, please select atleast school'});
+          }
+          
+        }
+    }
 
-      handleSelect = (month, year) => {
+    handleSelect = (month, year) => {
         var monthArray = month.split('/');  
         var starDateFormat = year + '/' + monthArray[0];
         this.setState({starDateFormat});
+    }
+
+    handleCriteriaChange = (selectedCriteria) => {
+      this.setState({selectedCriteria});
+      var criteriaId = selectedCriteria.id;
+      if(criteriaId === 1){
+        this.setState({showCityDashboardForm: true,
+          showOtherDashboardForm: false, 
+          showForm: false, selectedCity:""});
+        return axios.get(API_PROXY_URL+`/api/v1/city`)
+        .then(result => {
+          console.log(result);
+          this.setState({
+            cities: result.data, 
+            error:false
+          });
+          }).catch(error => {
+          console.error("error", error);
+          this.setState({
+            error:`${error}`
+          });
+        });
+      } else if(criteriaId === 2){
+        this.setState({showOtherDashboardForm: true,
+          showCityDashboardForm: false,
+          showForm: false, selectedSchool:"", selectedGrade:"", 
+          selectedSec:"", selectedGroup:"", selectedStudent:""});
+        return axios.get(API_PROXY_URL+`/api/v1/school/`)
+        .then(result => {
+          console.log(result);
+          this.setState({
+            schools: result.data, error:false});
+          }).catch(error => {
+          console.error("error", error);
+          this.setState({
+            error:`${error}`
+          });
+        });
       }
+    }
 
     render() {
         const {error, selectedSchool, selectedGrade, 
           selectedSec,selectedGroup,selectedStudent, 
-          schools,grades,sections, groups, students} = this.state;
-        const showHide = {
-          'display': this.state.showForm ? 'block' : 'none'
-        };
-        if(error){
-            return (
-                <p>
-                  There was an error loading the response.. {'  '}
-                  <Button color="primary" onClick={() => this.viewGroups()}  tag={Link} to="/dashboard">Try Again</Button>
-                </p>
-            );
-        }
-
+          schools,grades,sections, groups, students, 
+          criterias, selectedCriteria, cities, selectedCity } = this.state;
+        const showHide = {'display': this.state.showForm ? 'block' : 'none'};
+        const showErrorDashboard = {'display': this.state.showErrorForm ? 'block' : 'none'};
+        const showCityDashboardSel = {'display': this.state.showCityDashboardForm ? 'block' : 'none'};
+        const showOtherDashboardSel = {'display': this.state.showOtherDashboardForm ? 'block' : 'none'};
         return (
             <div className="dashboard">
             <Container>
@@ -1352,29 +1402,47 @@ class Dashboard extends Component {
                           <MonthPickerInput className="monthPickerClass" mode="calendarOnly" onChange={this.handleSelect} closeOnSelect={true}/>
                       </FormGroup>
                       <FormGroup className="col-md-3 mb-3">
-                          <Label for="name" style={{color:'white'}}>School Name</Label>
-                          <Select options={ schools } name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
+                          <Label for="criteria" style={{color:'white'}}>Criteria</Label>
+                          <Select options={ criterias } name="criteria" id="criteria" onChange={this.handleCriteriaChange} value={selectedCriteria}/>
                       </FormGroup>
-                      <FormGroup className="col-md-3 mb-3">
-                          <Label for="grade" style={{color:'white'}}>Class or Grade</Label>
-                          <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
+                      <FormGroup className="col-md-3 mb-3" style={showCityDashboardSel}>
+                          <Label for="city" style={{color:'white'}}>City</Label>
+                          <Select options={ cities } name="city" id="city" onChange={this.handleCityChange} value={selectedCity}/>
                       </FormGroup>
-                      <FormGroup className="col-md-3 mb-3">
-                          <Label for="section" style={{color:'white'}}>Section</Label>
-                          <Select options={ sections } name="section" id="section" onChange={this.handleSectionChange} value={selectedSec}/>
+                      <FormGroup className="col-md-3 mb-3" style={showCityDashboardSel}>   
+                            <Button color="primary" className="goButton"  onClick={() => this.onSubmit()}>Go</Button>{' '}
                       </FormGroup>
-                      <FormGroup className="col-md-3 mb-3">
-                          <Label for="section" style={{color:'white'}}>Group</Label>
-                          <Select options={ groups } name="group" id="group" onChange={this.handleGroupChange} value={selectedGroup}/>
-                      </FormGroup>
-                      <FormGroup className="col-md-3 mb-3">
-                          <Label for="student" style={{color:'white'}}>Student</Label>
-                          <Select options={ students } name="student" id="student" onChange={this.handleStudentChange} value={selectedStudent}/>
-                      </FormGroup>
-                      <FormGroup>   
-                          <Button color="primary" className="goButton"  onClick={() => this.onSubmit()}>Go</Button>{' '}
-                      </FormGroup>
+                    </Form>
+                    <div style={showOtherDashboardSel}>
+                      <Form className="row" >                    
+                        <FormGroup className="col-md-3 mb-3">
+                            <Label for="name" style={{color:'white'}}>School Name</Label>
+                            <Select options={ schools } name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
+                        </FormGroup>
+                        <FormGroup className="col-md-3 mb-3">
+                            <Label for="grade" style={{color:'white'}}>Class or Grade</Label>
+                            <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
+                        </FormGroup>
+                        <FormGroup className="col-md-3 mb-3">
+                            <Label for="section" style={{color:'white'}}>Section</Label>
+                            <Select options={ sections } name="section" id="section" onChange={this.handleSectionChange} value={selectedSec}/>
+                        </FormGroup>
+                        <FormGroup className="col-md-3 mb-3">
+                            <Label for="section" style={{color:'white'}}>Group</Label>
+                            <Select options={ groups } name="group" id="group" onChange={this.handleGroupChange} value={selectedGroup}/>
+                        </FormGroup>
+                        <FormGroup className="col-md-3 mb-3">
+                            <Label for="student" style={{color:'white'}}>Student</Label>
+                            <Select options={ students } name="student" id="student" onChange={this.handleStudentChange} value={selectedStudent}/>
+                        </FormGroup>
+                        <FormGroup className="col-md-3 mb-3">   
+                            <Button color="primary" className="goButton"  onClick={() => this.onSubmit()}>Go</Button>{' '}
+                        </FormGroup>
                       </Form>
+                      </div>
+                      <div style={showErrorDashboard}>
+                          <p style={{color: 'red'}}>{error}</p>
+                      </div>
                       <div style={showHide}>
                         <div className="starAlign">
                           <canvas className="starAlign-att" ref="attCanvas" width="490" height="400"></canvas>

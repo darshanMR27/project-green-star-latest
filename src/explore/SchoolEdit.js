@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Link} from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
+import {API_PROXY_URL} from "../Constants";
 
 function validate(schoolName, maxClassGrade, address, pinCode, city) {
   // we are going to store errors for all fields
@@ -24,9 +24,11 @@ function validate(schoolName, maxClassGrade, address, pinCode, city) {
   }
   if(address === '' || address === "undefined"){
     errors.push("Address cannot be empty");
-  } if(pinCode === '' || pinCode === "undefined"){
+  } 
+  if(pinCode === '' || pinCode === "undefined"){
     errors.push("Pincode cannot be empty");
-  } if(city === '' || city === "undefined"){
+  } 
+  if(city === '' || city === "undefined"){
     errors.push("City cannot be empty");
   } 
 
@@ -65,7 +67,7 @@ class SchoolEdit extends Component {
     this.setState({showErrorSchool: false});
     this.setState({showAddform: false});
     if (this.props.match.params.id !== 'new') {
-      const school = await (await fetch(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/${this.props.match.params.id}`)).json();
+      const school = await (await fetch(API_PROXY_URL+`/api/v1/school/${this.props.match.params.id}`)).json();
       console.log(school);
       this.setState(
         {item: school,
@@ -109,7 +111,7 @@ class SchoolEdit extends Component {
     } else {
       this.setState({errors:[]});
       if (selId !== 'new') {  
-        return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school', {
+        return fetch(API_PROXY_URL+`/api/v1/school`, {
           method: 'PUT',
           headers: {
             'Accept': 'application/json',
@@ -133,7 +135,7 @@ class SchoolEdit extends Component {
           });
         });
       } else {
-        return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school', {
+        return fetch(API_PROXY_URL+`/api/v1/school`, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',

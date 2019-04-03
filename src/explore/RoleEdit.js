@@ -7,17 +7,40 @@ import "@kenshooui/react-multi-select/dist/style.css";
 import MultiSelect from "@kenshooui/react-multi-select";
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import {API_PROXY_URL} from "../Constants";
 
+function validate(roleName, password) {
+  // we are going to store errors for all fields
+  // in a signle array
+  const errors = [];
+  if(roleName === '' || roleName === "undefined"){
+      errors.push("Role Name cannot be empty");
+  } else {
+      if (roleName.length < 5) {
+          errors.push("Role Name should be at least 10 charcters long");
+      }
+  }
+  if(password === '' || password === "undefined"){
+    errors.push("Password cannot be empty");
+  } else {
+    if (password.length < 6) {
+        errors.push("Password must be atleast 6 characters");
+    }
+  }
+  return errors;
+}
 class RoleEdit extends Component {
   emptyItem = {
       roleName: "",
-      rolePassword:""
+      rolePassword:"",
+      errors:[]
   };
 
   state = {
     roleName: "",
     rolePassword:"",
-    privilages : []
+    privilages : [],
+    errors:[]
   }
 
   constructor(props) {
@@ -25,7 +48,8 @@ class RoleEdit extends Component {
     this.state = {
       item: this.emptyItem,
       privilages : [],
-      selectedItems: []
+      selectedItems: [],
+      errors:[]
     };
     this.onChange = this.onChange.bind(this);
     this.roleSubmit = this.roleSubmit.bind(this);
@@ -34,7 +58,7 @@ class RoleEdit extends Component {
 
   async componentDidMount() {
     if (this.props.match.params.id !== 'new') {
-      const role = await (await fetch(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/roles/${this.props.match.params.id}`)).json();
+      const role = await (await fetch(API_PROXY_URL+`/api/v1/roles/${this.props.match.params.id}`)).json();
       console.log(role);
       this.setState(
         {item: role,
@@ -44,7 +68,7 @@ class RoleEdit extends Component {
         });
     } else {
       this.setState({showForm: true});
-      return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/roles/privilages`)
+      return axios.get(API_PROXY_URL+`/api/v1/roles/privilages`)
       .then(result => {
         console.log(result);
         this.setState({
@@ -66,9 +90,6 @@ class RoleEdit extends Component {
   }
 
   handlePrivilageschange(selectedItems) {
-    // selectedItems.forEach( selectedOption => 
-    //   console.log( `Selected: ${selectedOption.id}` ) 
-    // );
     this.setState({ selectedItems });
   }
 
@@ -76,12 +97,17 @@ class RoleEdit extends Component {
     event.preventDefault();
     const {roleName, rolePassword} = this.state;
     const selId = this.props.match.params.id;
-    if (selId !== 'new') {  
-      return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/roles/update', {
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+    const errors = validate(roleName, rolePassword);
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return false;
+    } else {
+      if (selId !== 'new') {  
+        return fetch(API_PROXY_URL+`/api/v1/roles/update`, {
+          method: 'PUT',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           //id: selId,
@@ -99,8 +125,8 @@ class RoleEdit extends Component {
       });
     } else {
       var encryptedPwd = CryptoJS.AES.encrypt(rolePassword, 'secret key 123').toString();
-       console.log("encrypted text", encryptedPwd);
-      return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/roles/add', {
+      console.log("encrypted text", encryptedPwd);
+      return fetch(API_PROXY_URL+`/api/v1/roles/add`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -122,9 +148,25 @@ class RoleEdit extends Component {
       });
     }
   }
+}
 
-  render() {
-    const {item, error, roleName, rolePassword, privilages, selectedItems} = this.state;
+resetRole = async () => {
+  this.setState({
+    roleName:'',
+    rolePassword:'',
+    errors:[],
+    error:"",
+    showAddForm:false,
+    showErrorForm: false,
+    showUpdateForm:false
+  });
+  this.setState({
+    error:''
+  });
+}
+
+render() {
+    const {item, error, roleName, rolePassword, privilages, selectedItems, errors} = this.state;
     const showAddRole = {
       'display': this.state.showAddForm ? 'block' : 'none'
     };
@@ -139,6 +181,18 @@ class RoleEdit extends Component {
       <Container>
         {title}
         <Form onSubmit={this.roleSubmit}>
+            {errors.map(error =>(
+                <p key={error} className="errorText">{error}</p>
+            ))}
+            <div style={showAddRole}>
+              <p style={{color: 'darkgreen'}}>{roleName} role Added successfully</p>
+            </div>
+            <div style={showErrorRole}>
+                <p style={{color: 'red'}}>{error} while adding / updating role</p>
+            </div>
+            <div style={showUpdateRole}>
+                <p style={{color: 'blue'}}>{roleName} role Updated successfully</p>
+            </div>
           <div className="row">
                 <FormGroup className="col-md-3 mb-3">
                     <Label for="roleName" style={{color:'white'}}>Role Name</Label>
@@ -161,18 +215,9 @@ class RoleEdit extends Component {
             <div>
               <FormGroup>   
                 <Button color="primary" type="submit">Save</Button>{' '}
-                <Button color="success" tag={Link} to="/roles">Cancel</Button>
+                <Button color="secondary" onClick={() => this.resetRole()}>reset</Button>
               </FormGroup>
           </div>
-          <div style={showAddRole}>
-              <p style={{color: 'darkgreen'}}>{roleName} role Added successfully</p>
-            </div>
-            <div style={showErrorRole}>
-                <p style={{color: 'red'}}>{error} while adding / updating role</p>
-            </div>
-            <div style={showUpdateRole}>
-                <p style={{color: 'blue'}}>{roleName} role Updated successfully</p>
-            </div>
         </Form>
       </Container>
     </div>

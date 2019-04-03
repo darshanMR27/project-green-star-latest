@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
+import {API_PROXY_URL} from "../Constants";
+
 class HolidayList extends Component {
   constructor(props) {
     super(props);
   this.state = {
     holidays: []
   };
-  this.remove = this.remove.bind(this);
+  //this.remove = this.remove.bind(this);
 }
 
 state = {
@@ -21,7 +23,7 @@ state = {
 
 componentDidMount(){
   this.setState({showForm: true});
-  return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/holiday/all`)
+  return axios.get(API_PROXY_URL+`/api/v1/holiday/all`)
   .then(result => {
     console.log(result);
     this.setState({
@@ -39,23 +41,24 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
+    document.getElementById("AddHoliday").style.display="none";
     this.setState({showForm: false,
     schoolName:"",maxGrade:"",address:"",pinCode:"",city:""});
-    this.props.history.push('/schools/new');
+    //this.props.history.push('/schools/new');
   }
 
-  async remove(id) {
-    await fetch(`/api/school/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(() => {
-      let updatedGroups = [...this.state.schools].filter(i => i.id !== id);
-      this.setState({schools: updatedGroups});
-    });
-  }
+  // async remove(id) {
+  //   await fetch(`/api/school/${id}`, {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }).then(() => {
+  //     let updatedGroups = [...this.state.schools].filter(i => i.id !== id);
+  //     this.setState({schools: updatedGroups});
+  //   });
+  // }
 
   render() {
     const {holidays, error } = this.state;
@@ -76,7 +79,7 @@ componentDidMount(){
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()}  tag={Link} to="/holidays/new">Add Holiday</Button>{'     '}
+                    <Button id="AddHoliday" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/holidays/new">Add Holiday</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>

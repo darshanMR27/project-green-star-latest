@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { Link} from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 //import AppNavbar from './AppNavbar';
 import Select from 'react-select';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css"
 import axios from 'axios';
+import {API_PROXY_URL} from "../Constants";
 
 function validate(schoolId, gradeName) {
   // we are going to store errors for all fields
   // in a signle array
   const errors = [];
-  if(schoolId === '' || schoolId === "undefined"){
+  if(schoolId === '' || schoolId === undefined){
       errors.push("School Name cannot be empty");
   } 
-  if(gradeName === '' || gradeName === "undefined"){
+  if(gradeName === '' || gradeName === undefined){
     errors.push("Class or Grade cannot be empty");
   } else {
     if (gradeName > 10) {
@@ -61,7 +61,7 @@ class ClassEdit extends Component {
 
   async componentDidMount() {
      if (this.props.match.params.id !== 'new') {
-       const grade = await (await fetch(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class/${this.props.match.params.id}`)).json();
+       const grade = await (await fetch(API_PROXY_URL+`/api/v1/class/${this.props.match.params.id}`)).json();
        console.log(grade);
        this.setState(
          {item: grade,
@@ -71,7 +71,7 @@ class ClassEdit extends Component {
            gradeId: grade.id
          });
      } else {
-       return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
+       return axios.get(API_PROXY_URL+`/api/v1/school/`)
        .then(result => {
          console.log(result);
          this.setState({
@@ -100,55 +100,61 @@ class ClassEdit extends Component {
     const {gradeName, selectedSchool, schoolId } = this.state;
     let selId = this.props.match.params.id;
     //alert('selId = '+selId+', gradeId = '+gradeId+', schoolId ='+schoolId);
-    const errors = validate(schoolId, gradeName);
-    if (errors.length > 0) {
-      this.setState({ errors });
-      return false;
-    } else {
-      this.setState({errors:[]});
-      if (selId !== 'new') {  
-        return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class', {
-          method: 'PUT',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: selId,
-            grade: gradeName,
-            schoolId: schoolId
-          })
-        }).then(response => {
-          this.setState({showUpdateForm: true});
-        }).catch(error => {
-          this.setState({showErrorForm: true});
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
-          });
-        });
+    this.setState({errors:[]});
+    if (selId !== 'new') {  
+        const errors = validate(schoolId, gradeName);
+        if (errors.length > 0) {
+          this.setState({ errors });
+          return false;
+        } else {
+            return fetch(API_PROXY_URL+`/api/v1/class`, {
+              method: 'PUT',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: selId,
+                grade: gradeName,
+                schoolId: schoolId
+              })
+            }).then(response => {
+              this.setState({showUpdateForm: true});
+            }).catch(error => {
+              this.setState({showErrorForm: true});
+              console.error("error", error);
+              this.setState({
+                error:`${error}`
+              });
+            });
+          }
       } else {
-        let schoolId = selectedSchool.id;
-        return fetch('http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/class', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            grade: gradeName,
-            schoolId: schoolId
-          })
-        }).then(response => {
-          this.setState({showAddForm: true});
-        }).catch(error => {
-          this.setState({showErrorForm: true});
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
+        const errors = validate(this.state.selectedSchool, gradeName);
+        if (errors.length > 0) {
+          this.setState({ errors });
+          return false;
+        } else {
+          let schoolId = selectedSchool.id;
+          return fetch(API_PROXY_URL+`/api/v1/class`, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              grade: gradeName,
+              schoolId: schoolId
+            })
+          }).then(response => {
+            this.setState({showAddForm: true});
+          }).catch(error => {
+            this.setState({showErrorForm: true});
+            console.error("error", error);
+            this.setState({
+              error:`${error}`
+            });
           });
-        });
-      }
+        }
     }
   }
 
@@ -160,7 +166,8 @@ class ClassEdit extends Component {
         error:"",
         showAddForm:false,
         showErrorForm: false,
-        showUpdateForm:false
+        showUpdateForm:false,
+        //selectedSchool:null
       });
       this.setState({
         error:''
@@ -173,13 +180,13 @@ class ClassEdit extends Component {
         error:"",
         showAddForm:false,
         showErrorForm: false,
-        showUpdateForm:false
+        showUpdateForm:false,
+        //selectedSchool:null
       });
       this.setState({
         error:''
       });
     }
-    
   }
 
   render() {

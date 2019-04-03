@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Button, Input, FormGroup, Form, Container, Label } from 'reactstrap';
-import { Link, BrowserRouter as Router, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 //import { Base64 } from 'js-base64';
 // import sha256 from 'crypto-js/sha256';
 // import hmacSHA512 from 'crypto-js/hmac-sha512';
@@ -8,8 +8,8 @@ import { Link, BrowserRouter as Router, Redirect } from 'react-router-dom';
 //import PropTypes from 'prop-types';
 import "./cssstyles/Common.css";
 import "./cssstyles/index.css";
-import axios from 'axios';
-import App from './App';
+// import axios from 'axios';
+// import App from './App';
 
 function validate(roleName, password) {
     // we are going to store errors for all fields
@@ -116,7 +116,7 @@ class Login extends Component {
                         </FormGroup>
                         <FormGroup style={{paddingLeft:'1.2em'}}>
                             <Button color="success" onClick={() => this.handleSubmit()}>Login</Button>{'     '}
-                            <Button color="success" onClick={() => this.resetForm()}>Reset</Button>{'     '}
+                            <Button color="secondary" onClick={() => this.resetForm()}>Reset</Button>{'     '}
                         </FormGroup>
                     </Form>
                 </Container>

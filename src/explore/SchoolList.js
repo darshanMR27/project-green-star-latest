@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
+import {API_PROXY_URL} from "../Constants";
 
 class SchoolList extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class SchoolList extends Component {
     student:"",
     schools: []
   };
-  this.remove = this.remove.bind(this);
+  //this.remove = this.remove.bind(this);
 }
 
 state = {
@@ -32,7 +33,7 @@ state = {
 componentDidMount(){
   this.setState({showForm: true});
   this.setState({showAddForm: true});
-  return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/school/`)
+  return axios.get(API_PROXY_URL+`/api/v1/school/`)
   .then(result => {
     console.log(result);
     this.setState({
@@ -50,32 +51,24 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
+    document.getElementById("AddSchool").style.display="none";
     this.setState({showForm: false});
     this.setState({showAddform:false});
-    this.props.history.push('/schools/new');
-  }
+    //this.props.history.push('/schools/new');
+  } 
 
-  hideAddButton = async () => {
-    this.setState({showForm: false,
-    schoolName:"",maxGrade:"",address:"",pinCode:"",city:""});
-    this.setState({showAddform: false});
-    this.props.history.push('/schools/new');
-  }
-
-  
-
-  async remove(id) {
-    await fetch(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/school/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(() => {
-      let updatedSchools = [...this.state.schools].filter(i => i.id !== id);
-      this.setState({schools: updatedSchools});
-    });
-  }
+  // async remove(id) {
+  //   await fetch(API_PROXY_URL+`/api/school/${id}`, {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }).then(() => {
+  //     let updatedSchools = [...this.state.schools].filter(i => i.id !== id);
+  //     this.setState({schools: updatedSchools});
+  //   });
+  // }
 
   render() {
     const {schools, error } = this.state;
@@ -99,7 +92,7 @@ componentDidMount(){
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideAddButton()}  tag={Link} to="/schools/new">Add School</Button>{'     '}
+                    <Button id="AddSchool" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/schools/new">Add School</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>

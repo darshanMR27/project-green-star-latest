@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@kenshooui/react-multi-select/dist/style.css";
 import axios from 'axios';
+import {API_PROXY_URL} from "../Constants";
+
 class RoleList extends Component {
   emptyItem = {
     roleName:""
@@ -14,12 +16,9 @@ class RoleList extends Component {
     error:"",
     data: [],
   }
-  constructor(props) {
-    super(props);
-  }
     componentDidMount(){
       this.setState({showForm: true});
-      return axios.get(`http://ec2-35-154-78-152.ap-south-1.compute.amazonaws.com:8080/api/v1/roles/all`)
+      return axios.get(API_PROXY_URL+`/api/v1/roles/all`)
       .then(result => {
         console.log(result);
         this.setState({
@@ -38,6 +37,7 @@ class RoleList extends Component {
   }
   
   hideHeader = async () => {
+    document.getElementById("AddRole").style.display="none";
     this.setState({showForm: false});
     this.setState({groupName:""});
     //this.props.history.push('/groups');
@@ -65,7 +65,7 @@ class RoleList extends Component {
       return (
           <p>
             There was an error loading the response.. {'  '}
-            <Button color="primary" onClick={() => this.viewGroups()}  tag={Link} to="/groups">Try Again</Button>
+            <Button  color="primary" onClick={() => this.viewGroups()}  tag={Link} to="/groups">Try Again</Button>
           </p>
       );
     }
@@ -75,7 +75,7 @@ class RoleList extends Component {
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()}  tag={Link} to="/roles/new">Add Role</Button>{'     '}
+                    <Button id="AddRole" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/roles/new">Add Role</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>
