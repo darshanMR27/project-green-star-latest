@@ -161,7 +161,7 @@ class GroupEdit extends Component {
     const selectedSectionId = selectedSection.id;
     this.setState({selectedSectionName});
     this.setState({selectedSectionId});
-      return axios.get(API_PROXY_URL+`/api/v1/student/section/`+selectedSection.id)
+      return axios.get(API_PROXY_URL+`/api/v1/student/section/no-group/`+selectedSection.id)
       .then(result => {
         console.log(result.label);
         this.setState({
@@ -365,7 +365,7 @@ class GroupEdit extends Component {
               </div>
               <FormGroup>   
                 <Button color="primary" type="submit">Update</Button>{' '}
-                <Button color="success" tag={Link} to="/groups">Cancel</Button>
+                <Button color="secondary" onClick={() => this.resetGroup()}>reset</Button>
               </FormGroup>
             </Form>
             <div style={showUpdateGroup}>

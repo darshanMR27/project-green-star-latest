@@ -151,7 +151,7 @@ class SectionEdit extends Component {
           this.setState({ errors });
           return false;
         } else {
-            return fetch({API_PROXY_URL}`/api/v1/section`, {
+            return fetch(API_PROXY_URL+`/api/v1/section`, {
               method: 'PUT',
               headers: {
                 'Accept': 'application/json',
@@ -178,7 +178,7 @@ class SectionEdit extends Component {
         this.setState({ errors });
         return false;
       } else {
-        return fetch({API_PROXY_URL}`/api/v1/section`, {
+        return fetch(API_PROXY_URL+`/api/v1/section`, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',

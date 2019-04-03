@@ -188,7 +188,7 @@ class GroupList extends Component {
                   <td className="thStyle">{group.sectionName}</td>
                   <td className="thStyle">
                       {group.studentNames.map(student => (
-                        <tr>{student}</tr>
+                        <tr>{student.label}</tr>
                       ))}
                   </td>
                   <td className="thStyle" >

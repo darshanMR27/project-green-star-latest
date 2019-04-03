@@ -210,6 +210,13 @@ componentDidMount(){
       'display': this.state.showForm ? 'block' : 'none'
     };
 
+    const showAddPerformance = {
+      'display': this.state.showAddForm ? 'block' : 'none'
+    };
+    const showErrorPerformance = {
+      'display': this.state.showErrorForm ? 'block' : 'none'
+    };
+    
     return ( 
       <div>
         <div>
@@ -238,6 +245,12 @@ componentDidMount(){
                 </FormGroup>
             </Form>
             </Container>
+            <div style={showAddPerformance}>
+              <p style={{color: 'darkgreen'}}>Performance Added successfully</p>
+            </div>
+            <div style={showErrorPerformance}>
+                <p style={{color: 'red'}}>{error} while adding performance</p>
+            </div>
             <div style={showHide}>                      
               <Table id= "performace" className="mt-4 tableStyle">
                 <thead>
