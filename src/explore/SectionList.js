@@ -27,6 +27,7 @@ class SectionList extends Component {
 
 componentDidMount(){
   this.setState({showForm: false, showSchoolForm: true});
+  document.getElementById(localStorage.carousel).style.display="none";
     return axios.get(API_PROXY_URL+`/api/v1/school/`)
     .then(result => {
       console.log(result);

@@ -35,6 +35,7 @@ class GroupList extends Component {
   }
   
     componentDidMount(){
+      document.getElementById(localStorage.carousel).style.display="none";
       this.setState({showForm: false, showSchoolForm: true});
       return axios.get(API_PROXY_URL+`/api/v1/school/`)
       .then(result => {

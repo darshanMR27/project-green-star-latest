@@ -46,6 +46,7 @@ class HolidayEdit extends Component {
   }
 
   async componentDidMount() {
+    document.getElementById(localStorage.carousel).style.display="none";
     //this.setState({isPublic: this.state.checked});
     //alert(this.props.match.params.id)
     if (this.props.match.params.id !== 'new') {

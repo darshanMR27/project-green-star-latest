@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Button, Input, FormGroup, Form, Container, Label } from 'reactstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link} from 'react-router-dom';
 //import { Base64 } from 'js-base64';
 // import sha256 from 'crypto-js/sha256';
 // import hmacSHA512 from 'crypto-js/hmac-sha512';
@@ -46,6 +46,10 @@ class Login extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
+    componentDidMount(){
+        document.getElementById(localStorage.carousel).style.display="none";
+    }
+
     onChange = (e) => {
         if (e.target.name === 'isAdmin') {
             this.setState({
@@ -115,7 +119,7 @@ class Login extends Component {
                             
                         </FormGroup>
                         <FormGroup style={{paddingLeft:'1.2em'}}>
-                            <Button color="success" onClick={() => this.handleSubmit()}>Login</Button>{'     '}
+                            <Button  color="primary" onClick={() => this.hideHeader()} tag={Link} to={"/app/" + roleName}>Login</Button>{'   '}
                             <Button color="secondary" onClick={() => this.resetForm()}>Reset</Button>{'     '}
                         </FormGroup>
                     </Form>

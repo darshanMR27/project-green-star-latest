@@ -23,6 +23,7 @@ state = {
 
 componentDidMount(){
   this.setState({showForm: true});
+  document.getElementById(localStorage.carousel).style.display="none";
   return axios.get(API_PROXY_URL+`/api/v1/holiday/all`)
   .then(result => {
     console.log(result);

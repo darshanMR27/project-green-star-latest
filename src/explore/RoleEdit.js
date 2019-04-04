@@ -57,6 +57,7 @@ class RoleEdit extends Component {
   }
 
   async componentDidMount() {
+    document.getElementById(localStorage.carousel).style.display="none";
     if (this.props.match.params.id !== 'new') {
       const role = await (await fetch(API_PROXY_URL+`/api/v1/roles/${this.props.match.params.id}`)).json();
       console.log(role);

@@ -7,6 +7,7 @@ import outreach2 from './images/outreach-2.png';
 import outreach3 from './images/outreach-3.jpg';
 import "./cssstyles/styles.css";
 class About extends Component{
+
  render(){
     const content = [
         {
@@ -45,8 +46,8 @@ class About extends Component{
         }
       ];
 return (
-<div className="dashboard">
-    <Slider autoplay="3000ms" className="slider">
+<div className="dashboard" id="aboutId">
+    <Slider autoplay="2000ms" className="slider">
         {content.map((item, index) => (
             <div
                 key={index} className="slider-content"

@@ -1,46 +1,72 @@
-// import React, {Component} from 'react';
-// import { Provider, Heading, Subhead } from '@rebass/grid';
+// import React, { Component } from "react";
 // import {
-//   Hero, CallToAction, ScrollDownIndicator, Section, Checklist
-// } from 'react-landing-page';
-
+//   Route,
+//   BrowserRouter as Router
+// } from "react-router-dom";
+// import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+// import Dashboard from "./Dashboard";
+// import Report from "./Report";
+// import headerLogo from './images/logo.jpg';
+// import GroupList from "./explore/GroupList";
+// import Login from "./Login";
+// import About from "./About";
+// import Contact from "./Contact";
+// import GroupEdit from "./explore/GroupEdit";
+// import SchoolList from "./explore/SchoolList";
+// import SchoolEdit from "./explore/SchoolEdit";
+// import ClassList from "./explore/ClassList";
+// import ClassEdit from "./explore/ClassEdit";
+// import SectionList from "./explore/SectionList";
+// import SectionEdit from "./explore/SectionEdit";
+// import StudentList from "./explore/StudentList";
+// import StudentEdit from "./explore/StudentEdit";
+// import HolidayList from "./explore/HolidayList";
+// import HolidayEdit from "./explore/HolidayEdit";
+// import RoleList from "./explore/RoleList";
+// import RoleEdit from "./explore/RoleEdit";
+// import PerformanceList from "./explore/PerformanceList";
+// import "./cssstyles/Common.css";
+// import "./cssstyles/index.css";
 // class Home extends Component {
-//     render() {
-//         const featherCheckmark = <svg
-//             xmlns="http://www.w3.org/2000/svg"
-//             width="24" height="24"
-//             viewBox="0 0 24 24"
-//             fill="none" stroke="currentColor"
-//             strokeWidth="2"
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//             >
-//             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-//             <polyline points="22 4 12 14.01 9 11.01"/>
-//             </svg>
-//         return (
-//             <Provider>
-//                 <Hero
-//                 color="black"
-//                 bg="white"
-//                 backgroundImage="https://source.unsplash.com/jxaj-UrzQbc/1600x900"
-//                 >
-//                     <Heading>Name of your app</Heading>
-//                     <Subhead>a couple more words</Subhead>
-//                     <CallToAction href="/getting-started" mt={3}>Get Started</CallToAction>
-//                     <ScrollDownIndicator/>
-//                 </Hero>
-//                 <Section width={1}
-//                 heading='Why pick this library?'
-//                 subhead='maybe this will help'>
-//                 <Checklist children={[
-//                     'Open Source',
-//                     'React best practices',
-//                     'Practical API'
-//                 ]} checkmark={featherCheckmark}/>
-//                 </Section>
-//             </Provider>
-//         );
-//     }
+  
+//   // componentDidMount(){
+//   //   document.getElementById(localStorage.carousel).style.display="block";
+//   // }
+//   render (){
+//     localStorage.setItem("carousel","carouselId");
+//     return (
+//       <Router>
+//           <div>
+//             <Navbar expand="lg" bg="dark" variant="dark">
+//             <a href="/dashboard">  <Navbar.Brand href="#" style={{display: 'flex'}}><img src={headerLogo} alt="logo" /></Navbar.Brand></a>
+//               <Navbar.Toggle aria-controls="basic-navbar-nav" />
+//               <Navbar.Collapse id="basic-navbar-nav" >
+//                 <Nav className="ml-auto">
+//                   <Nav.Link  href="/login">Login</Nav.Link>
+//                   <Nav.Link  href="#">Dashboard</Nav.Link>
+//                   <Nav.Link  href="#">Report</Nav.Link>
+//                   <NavDropdown  title="Explore" id="basic-nav-dropdown">
+//                   </NavDropdown>
+//                 </Nav>
+//               </Navbar.Collapse>
+//             </Navbar>
+//             <div className="dashboard">
+//               <Route exact path="/login" component={Login}/>
+//             </div>
+//             <div>
+//             <Navbar expand="lg" bg="dark" variant="dark">
+//               <Navbar.Toggle aria-controls="basic-navbar-nav" />
+//               <Navbar.Collapse id="basic-navbar-nav" >
+//                 <Nav className="ml-auto">
+//                   <Nav.Link href="#">About</Nav.Link>
+//                   <Nav.Link href="/contact">Contact</Nav.Link>
+//                 </Nav>
+//               </Navbar.Collapse>
+//             </Navbar>
+//             </div>
+//           </div>
+//       </Router>
+//     );
+//   }
 // }
 // export default Home;

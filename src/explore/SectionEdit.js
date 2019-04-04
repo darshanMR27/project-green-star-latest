@@ -68,6 +68,7 @@ class SectionEdit extends Component {
 
   async componentDidMount() {
     // alert('GroupID = '+this.props.match.params.id);
+    document.getElementById(localStorage.carousel).style.display="none";
      if (this.props.match.params.id !== 'new') {
        const section = await (await fetch(API_PROXY_URL+`/api/v1/section/${this.props.match.params.id}`)).json();
        console.log(section);

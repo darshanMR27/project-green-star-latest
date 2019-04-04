@@ -80,6 +80,7 @@ class GroupEdit extends Component {
 
   async componentDidMount() {
    // alert('GroupID = '+this.props.match.params.id);
+   document.getElementById(localStorage.carousel).style.display="none";
    let selData = [];
     if (this.props.match.params.id !== 'new') {
       const group = await (await fetch(API_PROXY_URL+`/api/v1/group/${this.props.match.params.id}`)).json();

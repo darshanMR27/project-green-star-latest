@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import contacts from './images/contacts.jpg';
 class Contact extends Component{
+
+componentDidMount(){
+    document.getElementById(localStorage.carousel).style.display="none";
+}
+
  render(){
 return (
 <div style={{ background: `url('${contacts}') no-repeat center center`}}>

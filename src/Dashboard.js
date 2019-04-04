@@ -1182,6 +1182,7 @@ class Dashboard extends Component {
 
     componentDidMount(){
         this.setState({showForm: false});
+        document.getElementById(localStorage.carousel).style.display="none";
       }
 
       handleSchoolChange = (selectedSchool) => {

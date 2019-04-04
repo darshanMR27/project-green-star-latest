@@ -29,12 +29,17 @@ import "./cssstyles/Common.css";
 import "./cssstyles/index.css";
 class App extends Component {
   
+  // componentDidMount(){
+  //   document.getElementById("homeId").style.display="none";
+  // }
   render (){
+    localStorage.setItem("carousel","carouselId");
     return (
       <Router>
           <div>
+            {/* <p>{this.props.match.params.name}</p> */}
             <Navbar expand="lg" bg="dark" variant="dark">
-              <Navbar.Brand href="#" style={{display: 'flex'}}><img src={headerLogo} alt="logo" /></Navbar.Brand>
+            <a href="/dashboard">  <Navbar.Brand href="#" style={{display: 'flex'}}><img src={headerLogo} alt="logo" /></Navbar.Brand></a>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav" >
                 <Nav className="ml-auto">
@@ -55,6 +60,9 @@ class App extends Component {
               </Navbar.Collapse>
             </Navbar>
             <div className="dashboard">
+              <div id="carouselId">
+                <About/>
+              </div>
               <Route exact path="/login" component={Login}/>
               <Route path="/dashboard" component={Dashboard}/>
               <Route path="/report" component={Report}/>
@@ -81,7 +89,7 @@ class App extends Component {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav" >
                 <Nav className="ml-auto">
-                  <Nav.Link href="/about">About</Nav.Link>
+                  {/* <Nav.Link href="#">About</Nav.Link> */}
                   <Nav.Link href="/contact">Contact</Nav.Link>
                 </Nav>
               </Navbar.Collapse>

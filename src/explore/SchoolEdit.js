@@ -62,10 +62,11 @@ class SchoolEdit extends Component {
   }
 
   async componentDidMount() {
-    this.setState({showUpdateSchool: false});
-    this.setState({showAddSchool: false});
-    this.setState({showErrorSchool: false});
-    this.setState({showAddform: false});
+    this.setState({showUpdateSchool: false,
+      showAddSchool: false, showErrorSchool: false,
+      showAddform: false
+    });
+    document.getElementById(localStorage.carousel).style.display="none";
     if (this.props.match.params.id !== 'new') {
       const school = await (await fetch(API_PROXY_URL+`/api/v1/school/${this.props.match.params.id}`)).json();
       console.log(school);
