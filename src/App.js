@@ -39,7 +39,7 @@ class App extends Component {
           <div>
             {/* <p>{this.props.match.params.name}</p> */}
             <Navbar expand="lg" bg="dark" variant="dark">
-            <a href="/dashboard">  <Navbar.Brand href="#" style={{display: 'flex'}}><img src={headerLogo} alt="logo" /></Navbar.Brand></a>
+            <a href="/dashboard">  <Navbar.Brand href="/" style={{display: 'flex'}}><img src={headerLogo} alt="logo" /></Navbar.Brand></a>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav" >
                 <Nav className="ml-auto">

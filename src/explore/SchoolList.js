@@ -104,7 +104,7 @@ componentDidMount(){
                     <tr>
                       <th className="thStyle" width="20%">Name</th>
                       <th className="thStyle" width="20%">Max Grade or Class</th>
-                      <th className="thStyle" width="20%">Adress</th>
+                      <th className="thStyle" width="20%">Address</th>
                       <th className="thStyle" width="10%">Pin Code</th>
                       <th className="thStyle" width="10%">City</th>
                       <th className="thStyle" width="20%">Action</th>

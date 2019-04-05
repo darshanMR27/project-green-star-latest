@@ -193,3 +193,9 @@ td.linebreak p {
 .loginForm {
  float:center;
 }
+.month-input {
+  width: 16em;
+  height: 2.4em;
+  border: none;
+  text-align: center;
+}
