@@ -214,7 +214,12 @@ componentDidMount(){
         showIndRepForm: false, showGrpRepForm: false,
         showSecRepForm: false, error:'Choose date range less than or equal to 6 days'});
     } else {
-      if(selReportTypeId === 1){
+      if(diffDate <= 0){
+        this.setState({showErrorForm: true,
+          showIndRepForm: false, showGrpRepForm: false,
+          showSecRepForm: false, error:'To date must be greater than From date'});
+      } else {
+        if(selReportTypeId === 1){
           url = API_PROXY_URL+`/api/v1/reports/group/`+selectedGroupId;
           axios.get(url+`?fromDate=`+fromDate+`&toDate=`+toDate).then(result => {
             console.log('Report Data = '+result);
@@ -276,6 +281,7 @@ componentDidMount(){
       }
     }
   }
+}
 
   handleFromDateChange = fromDate => this.setState({ fromDate });
   handleToDateChange = toDate => this.setState({ toDate });

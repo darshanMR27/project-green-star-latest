@@ -44,7 +44,13 @@ function validate(studentName, rollNumber, caste, religion,
   } 
   if(joiningDate === '' || joiningDate === undefined){
     errors.push("Joining Date cannot be empty");
-  } 
+  } else {
+    var inputDate = new Date(joiningDate);
+    var todaysDate = new Date();
+    if(inputDate.setHours(0,0,0,0) > todaysDate.setHours(0,0,0,0)){
+        errors.push("Joining date cannot be greater than today's date");
+    }
+  }
   if(gender === null || gender === undefined){
     errors.push("Gender must be selected");
   }
